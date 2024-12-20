@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NanO - The Last Search Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: #1e1e1e;
+        color: #ffffff;
+        font-family: sans-serif;
+        overflow-y: auto;
+    }
+
+    header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+        background: #1e1e1e;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .header-content {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        max-width: 800px;
+        justify-content: space-between;
+    }
+
+    .brand {
+        font-family: 'Pacifico', cursive;
+        font-size: 1.5rem;
+        margin-right: 20px;
+    }
+
+    .left-controls {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .apikey-container {
+        position: relative;
+        width: 250px;
+        height: 40px;
+    }
+
+    .apikey-input {
+        width: 100%;
+        height: 100%;
+        border: none;
+        border-radius: 20px;
+        background: #2a2a2a;
+        color: #ffffff;
+        font-size: 12px;
+        padding: 0 15px;
+        outline: none;
+    }
+
+    .apikey-input::placeholder {
+        color: #777;
+        font-style: italic;
+    }
+
+    .search-container {
+        position: relative;
+        width: 250px;
+        height: 40px;
+    }
+
+    .search-input {
+        width: 100%;
+        height: 100%;
+        border: none;
+        border-radius: 20px;
+        background: #2a2a2a;
+        color: #ffffff;
+        font-size: 14px;
+        padding: 0 15px;
+        outline: none;
+    }
+
+    .search-input::placeholder {
+        color: #777;
+        font-style: italic;
+    }
+
+    .settings-button {
+        cursor: pointer;
+        background: #2a2a2a;
+        border: none;
+        border-radius: 20px;
+        color: #fff;
+        padding: 5px 10px;
+        font-size: 0.9rem;
+        outline: none;
+    }
+
+    main {
+        padding: 10px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .placeholder-message {
+        font-size: 0.9rem;
+        color: #aaa;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .summary-section {
+        background: #2a2a2a;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .summary-text {
+        flex: 1;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        color: #ddd;
+    }
+
+    .summary-image {
+        width: 70px;
+        height: 70px;
+        border-radius: 10px;
+        background: #333 center/cover no-repeat;
+        flex-shrink: 0;
+    }
+
+    .section-title {
+        margin: 20px 0 10px;
+        font-size: 1rem;
+        font-weight: 500;
+        border-bottom: 1px solid #333;
+        padding-bottom: 5px;
+    }
+
+    .category-container {
+        margin-bottom: 20px;
+    }
+
+    .result-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .result-item {
+        background: #2a2a2a;
+        border-radius: 10px;
+        padding: 10px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        flex: 1 1 calc(33.333% - 10px);
+        min-width: 180px;
+        max-width: 100%;
+    }
+
+    @media(max-width:1200px) {
+        .result-item {
+            flex: 1 1 calc(33.333% - 10px);
+        }
+    }
+    @media(max-width:900px) {
+        .result-item {
+            flex: 1 1 calc(50% - 10px);
+        }
+    }
+    @media(max-width:500px) {
+        .result-item {
+            flex: 1 1 calc(100% - 10px);
+        }
+    }
+
+    .result-item h3 {
+        margin: 0 0 5px;
+        font-size: 0.9rem;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .result-item p {
+        margin: 0;
+        font-size: 0.8rem;
+        color: #bbb;
+        margin-bottom: 8px;
+        line-height: 1.4;
+    }
+
+    .result-item a {
+        color: #69f;
+        text-decoration: none;
+        font-size: 0.8rem;
+    }
+
+    .result-item a:hover {
+        text-decoration: underline;
+    }
+
+    .result-item .thumb {
+        width: 16px;
+        height: 16px;
+        background: #444 center/cover no-repeat;
+        border-radius: 3px;
+        flex-shrink: 0;
+    }
+
+    .tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        justify-content: center;
+    }
+
+    .tab {
+        cursor: pointer;
+        background: #2a2a2a;
+        border-radius: 20px;
+        padding: 5px 10px;
+        font-size: 0.9rem;
+        color: #fff;
+    }
+
+    .tab.active {
+        background: #444;
+    }
+
+    .modal-overlay, .settings-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width:100%;
+        height:100%;
+        background:rgba(0,0,0,0.5);
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        z-index:1000;
+    }
+    .modal, .settings-modal {
+        background:#2a2a2a;
+        border-radius:10px;
+        padding:20px;
+        max-width:300px;
+        width:80%;
+        color:#fff;
+        position: relative;
+    }
+    .modal h2, .settings-modal h2 {
+        margin-top:0;
+        font-size:1.1rem;
+    }
+    .modal input, .settings-modal input[type=text] {
+        width:100%;
+        border:none;
+        border-radius:5px;
+        padding:8px;
+        margin-top:10px;
+        background:#333;
+        color:#fff;
+    }
+    .modal button, .settings-modal button {
+        background:#444;
+        border:none;
+        color:#fff;
+        padding:10px;
+        border-radius:5px;
+        cursor:pointer;
+        margin-top:10px;
+    }
+    .settings-modal .section {
+        margin-bottom:20px;
+    }
+
+    .settings-modal label {
+        display:block;
+        margin-bottom:5px;
+        font-size:0.9rem;
+    }
+
+    .settings-modal input[type=range] {
+        width:100%;
+        margin-bottom:10px;
+    }
+
+    .close-settings {
+        background:#444;
+        border:none;
+        color:#fff;
+        padding:5px 10px;
+        border-radius:5px;
+        cursor:pointer;
+        margin-top:10px;
+        float:right;
+        font-size:0.9rem;
+    }
+
+    .settings-values {
+        font-size:0.85rem;
+    }
+
+    .apikey-section {
+        margin-bottom:20px;
+    }
+
+    .apikey-section .masked-key {
+        font-family:monospace;
+        font-size:0.85rem;
+        background:#333;
+        padding:3px 5px;
+        border-radius:3px;
+        display:inline-block;
+        margin-top:5px;
+        color:#fff;
+    }
+
+    .apikey-section input[type=text] {
+        margin-top:5px;
+    }
+
+    .image-result-thumbnail {
+        width: 100%;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .video-result-thumbnail {
+        width: 100%;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        display: block;
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <div class="header-content">
+        <span class="brand">NanO</span>
+        <div class="left-controls">
+            <div class="apikey-container" id="apikey-container">
+                <input class="apikey-input" type="text" placeholder="Paste Serper API Key Here (X-API-KEY)">
+            </div>
+            <div class="search-container">
+                <input class="search-input" type="text" placeholder="What do you want to Search?">
+            </div>
+        </div>
+        <button class="settings-button" id="open-settings">Settings</button>
+    </div>
+</header>
+
+<main>
+    <!-- Tabs -->
+    <div class="tabs">
+        <div class="tab active" id="tab-web">Web</div>
+        <div class="tab" id="tab-images">Images</div>
+        <div class="tab" id="tab-videos">Videos</div>
+    </div>
+
+    <div id="results-area">
+        <div class="placeholder-message" id="placeholder-message">
+            Enter your Serper API key and search above.
+        </div>
+    </div>
+</main>
+
+<!-- API Key modal -->
+<div class="modal-overlay" id="apikey-modal" style="display:none;">
+    <div class="modal">
+        <h2>Enter Your API Key</h2>
+        <p>Please provide your Serper API key before searching:</p>
+        <input type="text" id="modal-apikey-input" placeholder="X-API-KEY">
+        <button id="save-apikey-btn">Save</button>
+    </div>
+</div>
+
+<!-- Settings modal -->
+<div class="settings-overlay" id="settings-overlay" style="display:none;">
+    <div class="settings-modal">
+        <h2>Settings</h2>
+        <div class="apikey-section">
+            <label>Current API Key (masked):</label>
+            <div class="masked-key" id="masked-key">No key</div>
+            <label for="new-apikey-input">Change API Key:</label>
+            <input type="text" id="new-apikey-input" placeholder="X-API-KEY">
+            <button id="update-apikey">Update API Key</button>
+        </div>
+        <div class="section">
+            <label for="results-range">Results per request (10,20,30):</label>
+            <input type="range" id="results-range" min="10" max="30" step="10">
+            <div class="settings-values" id="results-value"></div>
+        </div>
+        <div class="section">
+            <label for="pages-range">Pages (1 to 5):</label>
+            <input type="range" id="pages-range" min="1" max="5" step="1">
+            <div class="settings-values" id="pages-value"></div>
+        </div>
+        <button id="close-settings" class="close-settings">Close</button>
+    </div>
+</div>
+
+<script>
+    const input = document.querySelector('.search-input');
+    const apikeyInput = document.querySelector('.apikey-input');
+    const placeholderMessage = document.getElementById('placeholder-message');
+    const resultsArea = document.getElementById('results-area');
+
+    // Tabs
+    const tabWeb = document.getElementById('tab-web');
+    const tabImages = document.getElementById('tab-images');
+    const tabVideos = document.getElementById('tab-videos');
+    let selectedTab = 'web';
+
+    tabWeb.addEventListener('click', () => selectTab('web'));
+    tabImages.addEventListener('click', () => selectTab('images'));
+    tabVideos.addEventListener('click', () => selectTab('videos'));
+
+    function selectTab(tab) {
+        selectedTab = tab;
+        tabWeb.classList.remove('active');
+        tabImages.classList.remove('active');
+        tabVideos.classList.remove('active');
+        if (tab === 'web') tabWeb.classList.add('active');
+        if (tab === 'images') tabImages.classList.add('active');
+        if (tab === 'videos') tabVideos.classList.add('active');
+    }
+
+    // Settings elements
+    const openSettingsBtn = document.getElementById('open-settings');
+    const settingsOverlay = document.getElementById('settings-overlay');
+    const closeSettingsBtn = document.getElementById('close-settings');
+    const resultsRange = document.getElementById('results-range');
+    const resultsValue = document.getElementById('results-value');
+    const pagesRange = document.getElementById('pages-range');
+    const pagesValue = document.getElementById('pages-value');
+    const maskedKeyEl = document.getElementById('masked-key');
+    const newApikeyInput = document.getElementById('new-apikey-input');
+    const updateApikeyBtn = document.getElementById('update-apikey');
+    const apikeyContainer = document.getElementById('apikey-container');
+
+    let resultsPerPage = 10;
+    let pages = 1;
+    let storedApiKey = '';
+
+    // Load stored API key from localStorage
+    window.addEventListener('load', () => {
+        const savedKey = localStorage.getItem('serperApiKey');
+        if (savedKey) {
+            storedApiKey = savedKey;
+            maskAndDisplayKey();
+            apikeyModal.style.display = 'none';
+            apikeyContainer.style.display = 'none'; 
+        } else {
+            apikeyModal.style.display = 'flex';
+        }
+    });
+
+    // Set initial slider values
+    resultsRange.value = resultsPerPage;
+    resultsValue.textContent = `Current: ${resultsPerPage}`;
+
+    pagesRange.value = pages;
+    pagesValue.textContent = `Current: ${pages}`;
+
+    resultsRange.addEventListener('input', () => {
+        resultsPerPage = parseInt(resultsRange.value,10);
+        resultsValue.textContent = `Current: ${resultsPerPage}`;
+    });
+
+    pagesRange.addEventListener('input', () => {
+        pages = parseInt(pagesRange.value,10);
+        pagesValue.textContent = `Current: ${pages}`;
+    });
+
+    openSettingsBtn.addEventListener('click', () => {
+        settingsOverlay.style.display = 'flex';
+    });
+
+    closeSettingsBtn.addEventListener('click', () => {
+        settingsOverlay.style.display = 'none';
+    });
+
+    updateApikeyBtn.addEventListener('click', () => {
+        const key = newApikeyInput.value.trim();
+        if (key) {
+            storedApiKey = key;
+            localStorage.setItem('serperApiKey', storedApiKey);
+            maskAndDisplayKey();
+            newApikeyInput.value = '';
+            alert('API Key updated!');
+        } else {
+            alert('Please enter a valid API key.');
+        }
+    });
+
+    function maskAndDisplayKey() {
+        if (!storedApiKey) {
+            maskedKeyEl.textContent = 'No key';
+            return;
+        }
+        const first = storedApiKey.charAt(0);
+        const last = storedApiKey.charAt(storedApiKey.length - 1);
+        const masked = first + '*'.repeat(storedApiKey.length - 2) + last;
+        maskedKeyEl.textContent = masked;
+    }
+
+    const apikeyModal = document.getElementById('apikey-modal');
+    const modalApikeyInput = document.getElementById('modal-apikey-input');
+    const saveApikeyBtn = document.getElementById('save-apikey-btn');
+
+    saveApikeyBtn.addEventListener('click', () => {
+        const key = modalApikeyInput.value.trim();
+        if (key) {
+            storedApiKey = key;
+            localStorage.setItem('serperApiKey', storedApiKey);
+            maskAndDisplayKey();
+            apikeyModal.style.display = 'none';
+            apikeyContainer.style.display = 'none'; // Hide API key input in header
+        } else {
+            alert('Please enter a valid API key.');
+        }
+    });
+
+    input.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter' && input.value.trim() !== '') {
+            performSearch(input.value.trim());
+        }
+    });
+
+    async function performSearch(query) {
+        const apiKey = storedApiKey || apikeyInput.value.trim();
+        if (!apiKey) {
+            placeholderMessage.textContent = 'Please enter your Serper API key first.';
+            return;
+        }
+
+        resultsArea.innerHTML = '';
+        placeholderMessage.textContent = 'Searching...';
+
+        let endpoint = 'https://google.serper.dev/search';
+        let payload = { q: query, num: resultsPerPage };
+
+        if (selectedTab === 'images') {
+            endpoint = 'https://google.serper.dev/images';
+        } else if (selectedTab === 'videos') {
+            endpoint = 'https://google.serper.dev/videos';
+        }
+
+        try {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'X-API-KEY': apiKey,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                placeholderMessage.textContent = 'Error fetching results. Check your API key and query.';
+                return;
+            }
+
+            const data = await response.json();
+
+            if (selectedTab === 'web') {
+                const results = data.organic || [];
+                if (results.length === 0) {
+                    placeholderMessage.textContent = 'No results found.';
+                    return;
+                }
+                displaySummary(query, results);
+                displayWebResults(`Results for "${query}"`, results.slice(0, resultsPerPage));
+            } else if (selectedTab === 'images') {
+                const results = data.images || [];
+                if (results.length === 0) {
+                    placeholderMessage.textContent = 'No image results found.';
+                    return;
+                }
+                displayImageResults(`Image results for "${query}"`, results.slice(0, resultsPerPage));
+            } else if (selectedTab === 'videos') {
+                const results = data.videos || [];
+                if (results.length === 0) {
+                    placeholderMessage.textContent = 'No video results found.';
+                    return;
+                }
+                displayVideoResults(`Video results for "${query}"`, results.slice(0, resultsPerPage));
+            }
+
+            placeholderMessage.textContent = '';
+        } catch (error) {
+            console.error('Search error:', error);
+            placeholderMessage.textContent = 'An error occurred while searching.';
+        }
+    }
+
+    function displaySummary(query, results) {
+        const summarySection = document.createElement('div');
+        summarySection.classList.add('summary-section');
+
+        const firstResult = results[0];
+        const summaryTextContent = firstResult.snippet || 'No summary available.';
+
+        const summaryText = document.createElement('div');
+        summaryText.classList.add('summary-text');
+        summaryText.textContent = summaryTextContent;
+
+        const summaryImage = document.createElement('div');
+        summaryImage.classList.add('summary-image');
+        
+        // Attempt to get a favicon from the domain
+        const faviconUrl = getFaviconUrl(firstResult.link);
+        summaryImage.style.backgroundImage = `url('${faviconUrl}')`;
+
+        summarySection.appendChild(summaryImage);
+        summarySection.appendChild(summaryText);
+        resultsArea.appendChild(summarySection);
+    }
+
+    function displayWebResults(title, items) {
+        if (!items || items.length === 0) return;
+
+        const categoryContainer = document.createElement('div');
+        categoryContainer.classList.add('category-container');
+
+        const sectionTitle = document.createElement('h2');
+        sectionTitle.classList.add('section-title');
+        sectionTitle.textContent = title;
+        categoryContainer.appendChild(sectionTitle);
+
+        const row = document.createElement('div');
+        row.classList.add('result-row');
+
+        items.forEach(item => {
+            const resultItem = document.createElement('div');
+            resultItem.classList.add('result-item');
+
+            const itemTitle = document.createElement('h3');
+
+            const thumb = document.createElement('div');
+            thumb.classList.add('thumb');
+            thumb.style.backgroundImage = `url('${getFaviconUrl(item.link)}')`;
+
+            itemTitle.appendChild(thumb);
+            itemTitle.appendChild(document.createTextNode(item.title || 'No title'));
+
+            const snippetText = document.createElement('p');
+            snippetText.textContent = item.snippet || 'No snippet available.';
+
+            const link = document.createElement('p');
+            link.innerHTML = `<a href="${item.link}" target="_blank">Visit Page</a>`;
+
+            resultItem.appendChild(itemTitle);
+            resultItem.appendChild(snippetText);
+            resultItem.appendChild(link);
+            row.appendChild(resultItem);
+        });
+
+        categoryContainer.appendChild(row);
+        resultsArea.appendChild(categoryContainer);
+    }
+
+    function displayImageResults(title, items) {
+        const categoryContainer = document.createElement('div');
+        categoryContainer.classList.add('category-container');
+
+        const sectionTitle = document.createElement('h2');
+        sectionTitle.classList.add('section-title');
+        sectionTitle.textContent = title;
+        categoryContainer.appendChild(sectionTitle);
+
+        const row = document.createElement('div');
+        row.classList.add('result-row');
+
+        items.forEach(item => {
+            const resultItem = document.createElement('div');
+            resultItem.classList.add('result-item');
+
+            const imgEl = document.createElement('img');
+            imgEl.src = item.thumbnailUrl || item.imageUrl;
+            imgEl.alt = item.title || "Image result";
+            imgEl.classList.add('image-result-thumbnail');
+            resultItem.appendChild(imgEl);
+
+            const itemTitle = document.createElement('h3');
+            itemTitle.textContent = item.title || 'No title';
+            resultItem.appendChild(itemTitle);
+
+            const sourceText = document.createElement('p');
+            sourceText.textContent = `Source: ${item.source || item.domain}`;
+            resultItem.appendChild(sourceText);
+
+            const link = document.createElement('p');
+            link.innerHTML = `<a href="${item.link}" target="_blank">View Image Source</a>`;
+            resultItem.appendChild(link);
+
+            row.appendChild(resultItem);
+        });
+
+        categoryContainer.appendChild(row);
+        resultsArea.appendChild(categoryContainer);
+    }
+
+    function displayVideoResults(title, items) {
+        const categoryContainer = document.createElement('div');
+        categoryContainer.classList.add('category-container');
+
+        const sectionTitle = document.createElement('h2');
+        sectionTitle.classList.add('section-title');
+        sectionTitle.textContent = title;
+        categoryContainer.appendChild(sectionTitle);
+
+        const row = document.createElement('div');
+        row.classList.add('result-row');
+
+        items.forEach(item => {
+            const resultItem = document.createElement('div');
+            resultItem.classList.add('result-item');
+
+            const videoThumb = document.createElement('img');
+            videoThumb.src = item.thumbnailUrl || '';
+            videoThumb.alt = item.title || 'Video result';
+            videoThumb.classList.add('video-result-thumbnail');
+            resultItem.appendChild(videoThumb);
+
+            const itemTitle = document.createElement('h3');
+            itemTitle.textContent = item.title || 'No title';
+            resultItem.appendChild(itemTitle);
+
+            const sourceText = document.createElement('p');
+            sourceText.textContent = `Source: ${item.domain || 'Unknown'}`;
+            resultItem.appendChild(sourceText);
+
+            const link = document.createElement('p');
+            link.innerHTML = `<a href="${item.link || '#'}" target="_blank">Watch Video</a>`;
+            resultItem.appendChild(link);
+
+            row.appendChild(resultItem);
+        });
+
+        categoryContainer.appendChild(row);
+        resultsArea.appendChild(categoryContainer);
+    }
+
+    function getFaviconUrl(url) {
+        try {
+            const domain = new URL(url).hostname;
+            return `https://www.google.com/s2/favicons?sz=64&domain=${domain}`;
+        } catch {
+            return 'https://via.placeholder.com/64x64.png?text=No+Img';
+        }
+    }
+
+    // Instructions to make this your default search engine would be outside this code:
+    // - Host this page online (e.g. https://your-domain.com)
+    // - In your browser's search settings, add a new search engine:
+    //   Name: NanO
+    //   Keyword: nano
+    //   URL: https://your-domain.com/?q=%s
+    // Now typing "nano <search term>" in your address bar will perform a search.
+    // You can handle the query parameter (?q=) in your code by checking window.location.search
+    // and automatically performing the search on page load if a query parameter is present.
+</script>
+
+</body>
+</html>
